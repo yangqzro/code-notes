@@ -1,0 +1,46 @@
+syntax = "proto3";
+option go_package=".;pb";
+
+import "google/protobuf/empty.proto";
+
+service PoemService {
+  rpc GetPoem(GetPoemRequest) returns (Poem) {}
+  rpc GetPoemStream(GetPoemRequest) returns (stream StreamPoem) {}
+
+  rpc GetPoemAll(google.protobuf.Empty) returns (PoemCollection) {}
+  rpc GetPoemAllStream(google.protobuf.Empty) returns (stream Poem) {}
+
+  rpc UploadPoem(Poem) returns (UploadPoemResponse) {}
+  rpc UploadPoemStream(stream StreamPoem) returns (UploadPoemResponse) {}
+
+  rpc BatchUploadPoem(PoemCollection) returns (UploadPoemResponse) {}
+  rpc BatchUploadPoemStream(stream Poem) returns (stream UploadPoemResponse) {}
+}
+
+message Poem {
+  string title = 1;
+  string author = 2;
+  repeated string contents = 3;
+}
+
+message PoemCollection {
+  repeated Poem value = 1;
+}
+
+message StreamPoem {
+  oneof OneOf {
+    string title = 1;
+    string author = 2;
+    string content = 3;
+  }
+}
+
+message GetPoemRequest {
+  string title = 1;
+}
+
+message UploadPoemResponse {
+  string end_time = 1;
+  bool success = 2;
+  repeated Poem data = 3;
+}

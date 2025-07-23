@@ -1,0 +1,19 @@
+syntax="proto3";
+option go_package=".;message";
+
+package message;
+
+message Message {
+  string content = 1;
+}
+
+message MessageCollection {
+  repeated Message value = 1;
+}
+
+service MessageService {
+  rpc Unary(Message) returns (Message) {}
+  rpc ClientStream(stream Message) returns (MessageCollection) {}
+  rpc ServerStream(MessageCollection) returns (stream Message) {}
+  rpc BidirectionalStream(stream Message) returns (stream Message) {}
+}
