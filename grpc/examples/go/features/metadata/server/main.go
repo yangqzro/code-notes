@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"goexamples/features/pb/message"
+	"goexamples/features/proto/message"
 	"log"
 	"net"
 )

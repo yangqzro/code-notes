@@ -4,7 +4,7 @@
 // - protoc             v5.29.3
 // source: helloworld.proto
 
-package pb
+package proto
 
 import (
 	context "context"

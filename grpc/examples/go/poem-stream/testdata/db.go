@@ -3,12 +3,12 @@ package testdata
 import (
 	"encoding/json"
 	"errors"
-	"goexamples/poem-stream/pb"
+	"goexamples/poem-stream/proto"
 	"log"
 	"os"
 )
 
-type DB map[string]*pb.Poem
+type DB map[string]*proto.Poem
 
 func (db DB) Load(file string) error {
 	if file == "" {
@@ -20,7 +20,7 @@ func (db DB) Load(file string) error {
 		return err
 	}
 
-	p := []*pb.Poem{}
+	p := []*proto.Poem{}
 	if err := json.Unmarshal(data, &p); err != nil {
 		return err
 	}
@@ -30,15 +30,15 @@ func (db DB) Load(file string) error {
 	return nil
 }
 
-func (db DB) GetPoem(title string) (*pb.Poem, error) {
+func (db DB) GetPoem(title string) (*proto.Poem, error) {
 	if v, ok := db[title]; ok {
 		return v, nil
 	}
 	return nil, errors.New("poem not found")
 }
 
-func (db DB) GetPoemCollection() []*pb.Poem {
-	poems := make([]*pb.Poem, len(db))
+func (db DB) GetPoemCollection() []*proto.Poem {
+	poems := make([]*proto.Poem, len(db))
 	i := 0
 	for _, v := range db {
 		poems[i] = v
@@ -47,7 +47,7 @@ func (db DB) GetPoemCollection() []*pb.Poem {
 	return poems
 }
 
-func (db DB) SetPoem(title string, poem *pb.Poem) {
+func (db DB) SetPoem(title string, poem *proto.Poem) {
 	db[title] = poem
 }
 

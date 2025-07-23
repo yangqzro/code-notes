@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"goexamples/features/pb/message"
+	"goexamples/features/proto/message"
 	"goexamples/utils"
 	"log"
 

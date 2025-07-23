@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"flag"
-	"goexamples/helloworld/pb"
+	"goexamples/helloworld/proto"
 	"log"
 
 	"google.golang.org/grpc"
@@ -12,14 +12,14 @@ import (
 
 type Client struct {
 	conn   *grpc.ClientConn
-	client pb.GreeterClient
+	client proto.GreeterClient
 }
 
-func (c *Client) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+func (c *Client) SayHello(ctx context.Context, in *proto.HelloRequest) (*proto.HelloReply, error) {
 	return c.client.SayHello(ctx, in)
 }
 
-func (c *Client) SayHelloAgain(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+func (c *Client) SayHelloAgain(ctx context.Context, in *proto.HelloRequest) (*proto.HelloReply, error) {
 	return c.client.SayHelloAgain(ctx, in)
 }
 
@@ -34,7 +34,7 @@ func NewClient(addr string) *Client {
 	}
 	return &Client{
 		conn:   conn,
-		client: pb.NewGreeterClient(conn),
+		client: proto.NewGreeterClient(conn),
 	}
 }
 
@@ -49,13 +49,13 @@ func main() {
 	c := NewClient(*addr)
 	defer c.Close()
 
-	r, err := c.SayHello(context.Background(), &pb.HelloRequest{Name: *name})
+	r, err := c.SayHello(context.Background(), &proto.HelloRequest{Name: *name})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Greeting: %s", r.GetMessage())
 
-	r, err = c.SayHelloAgain(context.Background(), &pb.HelloRequest{Name: *name})
+	r, err = c.SayHelloAgain(context.Background(), &proto.HelloRequest{Name: *name})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}

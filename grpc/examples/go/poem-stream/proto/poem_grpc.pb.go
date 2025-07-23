@@ -4,7 +4,7 @@
 // - protoc             v5.29.3
 // source: poem.proto
 
-package pb
+package proto
 
 import (
 	context "context"

@@ -4,7 +4,7 @@
 // 	protoc        v5.29.3
 // source: helloworld.proto
 
-package pb
+package proto
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -122,7 +122,8 @@ const file_helloworld_proto_rawDesc = "" +
 	"\amessage\x18\x01 \x01(\tR\amessage2\x8a\x01\n" +
 	"\aGreeter\x12<\n" +
 	"\bSayHello\x12\x18.helloworld.HelloRequest\x1a\x16.helloworld.HelloReply\x12A\n" +
-	"\rSayHelloAgain\x12\x18.helloworld.HelloRequest\x1a\x16.helloworld.HelloReplyB\x06Z\x04.;pbb\x06proto3"
+	"\rSayHelloAgain\x12\x18.helloworld.HelloRequest\x1a\x16.helloworld.HelloReplyB\n" +
+	"Z\b./proto;b\x06proto3"
 
 var (
 	file_helloworld_proto_rawDescOnce sync.Once

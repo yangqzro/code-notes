@@ -12,6 +12,8 @@
 ```shell
 cd grpc/examples/go/poem-stream
 
+protoc --go_out=. --go-grpc_out=. ./poem.proto # 编译 proto 文件
+
 go run server/main.go # 1. 先运行服务端
 go run client/main.go # 2. 再运行客户端
 ```

@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"flag"
-	"goexamples/features/pb/message"
+	"goexamples/features/proto/message"
 	"goexamples/utils"
 	"log"
 	"net"

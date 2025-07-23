@@ -4,7 +4,7 @@
 // 	protoc        v5.29.3
 // source: poem.proto
 
-package pb
+package proto
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -362,7 +362,8 @@ const file_poem_proto_rawDesc = "" +
 	"UploadPoem\x12\x05.Poem\x1a\x13.UploadPoemResponse\"\x00\x128\n" +
 	"\x10UploadPoemStream\x12\v.StreamPoem\x1a\x13.UploadPoemResponse\"\x00(\x01\x129\n" +
 	"\x0fBatchUploadPoem\x12\x0f.PoemCollection\x1a\x13.UploadPoemResponse\"\x00\x129\n" +
-	"\x15BatchUploadPoemStream\x12\x05.Poem\x1a\x13.UploadPoemResponse\"\x00(\x010\x01B\x06Z\x04.;pbb\x06proto3"
+	"\x15BatchUploadPoemStream\x12\x05.Poem\x1a\x13.UploadPoemResponse\"\x00(\x010\x01B\n" +
+	"Z\b./proto;b\x06proto3"
 
 var (
 	file_poem_proto_rawDescOnce sync.Once

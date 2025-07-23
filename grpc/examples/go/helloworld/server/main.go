@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"goexamples/helloworld/pb"
+	"goexamples/helloworld/proto"
 	"log"
 	"net"
 
@@ -14,15 +14,15 @@ import (
 type Server struct {
 	listener net.Listener
 	server   *grpc.Server
-	pb.UnimplementedGreeterServer
+	proto.UnimplementedGreeterServer
 }
 
-func (*Server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	return &pb.HelloReply{Message: "Hello " + in.GetName()}, nil
+func (*Server) SayHello(ctx context.Context, in *proto.HelloRequest) (*proto.HelloReply, error) {
+	return &proto.HelloReply{Message: "Hello " + in.GetName()}, nil
 }
 
-func (*Server) SayHelloAgain(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	return &pb.HelloReply{Message: "Hello " + in.GetName() + " again"}, nil
+func (*Server) SayHelloAgain(ctx context.Context, in *proto.HelloRequest) (*proto.HelloReply, error) {
+	return &proto.HelloReply{Message: "Hello " + in.GetName() + " again"}, nil
 }
 
 func NewServer(port int) *Server {
@@ -32,7 +32,7 @@ func NewServer(port int) *Server {
 	}
 	gs := grpc.NewServer()
 	srv := &Server{server: gs, listener: lis}
-	pb.RegisterGreeterServer(gs, srv)
+	proto.RegisterGreeterServer(gs, srv)
 	log.Printf("server listening at %v", lis.Addr())
 	if err := gs.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
