@@ -24,4 +24,8 @@ curl -X POST http://localhost:8080/Greeter/SayHello -H "Content-Type: applicatio
 go run cmd/sameport/main.go
 grpcurl -plaintext -d '{"name": "world"}' localhost:8080 Greeter.SayHello
 curl -X POST http://localhost:8080/Greeter/SayHello -H "Content-Type: application/json" -d '{"name": "world"}'
+
+#  运行测试 onlyhttp
+go run cmd/onlyhttp/main.go
+curl -X POST http://localhost:8080/Greeter/SayHello -H "Content-Type: application/json" -d '{"name": "world"}'
 ```
