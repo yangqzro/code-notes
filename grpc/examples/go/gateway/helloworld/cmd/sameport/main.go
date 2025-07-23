@@ -16,29 +16,22 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-type ServerMux struct {
-	rpcServer  http.Handler
-	httpServer http.Handler
+func EnableH2C(handler http.Handler) http.Handler {
+	return h2c.NewHandler(handler, &http2.Server{})
 }
 
-func (srv *ServerMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	log.Printf("received request: url=%v, method=%v, header=%s", r.URL, r.Method, utils.String(r.Header))
-	if r.ProtoMajor == 2 && strings.HasPrefix(r.Header.Get("Content-Type"), "application/grpc") {
-		srv.rpcServer.ServeHTTP(w, r) // 处理 gRPC 请求
-	} else {
-		srv.httpServer.ServeHTTP(w, r)
-	}
-}
-
-func MustNewServerMux(rpcServer, httpServer http.Handler) *ServerMux {
+func MustServerMux(rpcServer, httpServer http.Handler) http.Handler {
 	if rpcServer == nil || httpServer == nil {
 		panic("rpcServer or httpServer is nil")
 	}
-	return &ServerMux{rpcServer: rpcServer, httpServer: httpServer}
-}
-
-func EnableH2C(handler http.Handler) http.Handler {
-	return h2c.NewHandler(handler, &http2.Server{})
+	return EnableH2C(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("received request: url=%v, method=%v, header=%s", r.URL, r.Method, utils.String(r.Header))
+		if r.ProtoMajor == 2 && strings.HasPrefix(r.Header.Get("Content-Type"), "application/grpc") {
+			rpcServer.ServeHTTP(w, r) // 处理 gRPC 请求
+		} else {
+			httpServer.ServeHTTP(w, r)
+		}
+	}))
 }
 
 var (
@@ -53,12 +46,10 @@ func main() {
 	hsrv := server.MustNewGreeterHTTPServer(context.Background(), fmt.Sprintf("localhost:%v", *port), opts)
 	rsrv := server.NewGreeterRPCServer(*mode)
 
-	mux := MustNewServerMux(rsrv, hsrv)
 	log.Printf("http server and rpc server will run on the same port, server listening at http://localhost:%v\n", *port)
-
 	log.Println("You can test it with: \n" + fmt.Sprintf(`    grpcurl -plaintext -d '{"name":"world"}' localhost:%v Greeter.SayHello`, *port))
 	log.Println("You can test it with: \n" + fmt.Sprintf(`    curl -X POST http://localhost:%v/Greeter/SayHello -H "Content-Type: application/json" -d '{"name": "world"}'`, *port))
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", *port), EnableH2C(mux)); err != nil {
+	if err := http.ListenAndServe(fmt.Sprintf(":%d", *port), MustServerMux(rsrv, hsrv)); err != nil {
 		log.Fatalf("failed to listen: %v\n", err)
 	}
 }
