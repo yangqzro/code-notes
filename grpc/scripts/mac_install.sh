@@ -2,6 +2,9 @@
 # https://protobuf.dev/installation/
 brew install protobuf
 
+# https://buf.build/docs/cli/installation/
+brew install bufbuild/buf/buf
+
 # https://grpc.io/docs/languages/go/quickstart/
 go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest

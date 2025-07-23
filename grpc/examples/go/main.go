@@ -2,18 +2,10 @@ package main
 
 import (
 	"fmt"
-	"goexamples/utils"
-	"time"
 
-	"google.golang.org/grpc/metadata"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
 func main() {
-	md := metadata.Pairs(
-		"timestamp", time.Now().Format(time.DateTime),
-		"grpc-timestamp", "example",
-	)
-
-	md.Set("grpc-timestamp", "example2") // This will panic if "grpc-timestamp" already exists
-	fmt.Println(utils.String(md))
+	fmt.Printf("runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{\"Greeter\", \"SayHello\"}, \"\")): %v\n", runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"Greeter", "SayHello"}, "")))
 }
