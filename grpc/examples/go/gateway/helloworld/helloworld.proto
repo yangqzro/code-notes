@@ -2,16 +2,16 @@ syntax = "proto3";
 
 option go_package = "./proto";
 
+service Greeter {
+  // 如果没有设置请求方法和路径，则路径绑定 /{package}.{service}/{method}，此例为 /Greeter/SayHello，请求方式是 POST
+  // 但前提是编译此文件时开启了 generate_unbound_methods=true 选项
+  rpc SayHello(HelloRequest) returns (HelloReply) {}
+}
+
 message HelloRequest {
   string name = 1;
 }
 
 message HelloReply {
   string message = 1;
-}
-
-service Greeter {
-  // 如果没有设置请求方法和路径，则路径绑定 /{package}.{service}/{method}，此例为 /Greeter/SayHello，请求方式是 POST
-  // 但前提是编译此文件时开启了 generate_unbound_methods=true 选项
-  rpc SayHello(HelloRequest) returns (HelloReply) {}
 }

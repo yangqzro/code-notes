@@ -39,7 +39,7 @@ func main() {
 
 	go func() {
 		opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-		srv := server.MustNewGreeterHTTPServer(context.Background(), fmt.Sprintf("localhost:%v", *rpcPort), opts)
+		srv := server.NewGreeterGateway(context.Background(), fmt.Sprintf("localhost:%v", *rpcPort), opts)
 		log.Printf("http server listening at http://localhost:%v\n", *httpPort)
 		log.Println("You can test it with: \n" + fmt.Sprintf(`    curl -X POST http://localhost:%v/Greeter/SayHello -H "Content-Type: application/json" -d '{"name": "world"}'`, *httpPort))
 		if err := srv.Listen(*httpPort); err != nil {
