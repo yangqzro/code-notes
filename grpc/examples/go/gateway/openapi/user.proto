@@ -1,0 +1,138 @@
+syntax = "proto3";
+
+package user;
+
+import "google/api/annotations.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "./proto";
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {version: "1.0"}
+  schemes: HTTP
+};
+
+service UserService {
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/users"
+      body: "user"
+      response_body: "user"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Add a user"
+      description: "Create new user with name and email"
+      tags: "Users"
+    };
+  }
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+    option (google.api.http) = {
+      delete: "/api/v1/users/{id}"
+      response_body: "user"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Delete a user by ID"
+      description: "Delete a user on the server"
+      tags: "Users"
+    };
+  }
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {
+    option (google.api.http) = {
+      patch: "/api/v1/users/{user.id}"
+      body: "user"
+      response_body: "user"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Update a user"
+      description: "Change properties of a user on the server"
+      tags: "Users"
+    };
+  }
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/users/{id}"
+      response_body: "user"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get a user by ID"
+      description: "Get a user from the server"
+      tags: "Users"
+    };
+  }
+  rpc ListUsers(ListUsersRequest) returns (stream ListUsersResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/users"
+      response_body: "user"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "List users"
+      description: "List all users on the server"
+      tags: "Users"
+    };
+  }
+}
+
+message User {
+  int64 id = 1;
+  string name = 2;
+  string email = 3;
+  // only output use
+  google.protobuf.Timestamp create_at = 4;
+  // only output use
+  google.protobuf.Timestamp update_at = 5;
+}
+
+// 使用 FieldMask 接收需创建的字段，可避免结构体的零值造成数据库的意外插入，比如未创建的字段被设置成零值
+// 此例未使用数据库，create_mask 字段仅作保留，不使用
+message CreateUserRequest {
+  User user = 1;
+  // POST 请求时，gRPC-Gateway 不会‌自动填充 FieldMask 类型的字段，需要手动添加
+  google.protobuf.FieldMask create_mask = 2;
+}
+
+message CreateUserResponse {
+  User user = 1;
+}
+
+message DeleteUserRequest {
+  int64 id = 1;
+}
+
+message DeleteUserResponse {
+  User user = 1;
+}
+
+// https://cloud.google.com/apis/design/standard_methods#update
+// 不采用扁平化结构：
+// 1. 需要手动同步 User 结构变更，增加维护成本
+// 2. FieldMask 应由后端/BFF层根据业务规则生成，不应暴露给外界
+message UpdateUserRequest {
+  User user = 1;
+  // https://grpc-ecosystem.github.io/grpc-gateway/docs/mapping/patch_feature/
+  // gRPC-Gateway 自动填充 FieldMask 需要满足三个条件：
+  //     1. 仅 PATCH 请求
+  //     2. 消息体定义中仅有一个 FieldMask 字段
+  //     3. PATCH 请求处理方法定义时，body 选项不能为 *
+  // 其他情况下，FieldMask 视为普通字段，需要手动添加
+  // 字段掩码指定了要更新的字段路径，格式为 "name"、"email" 等。此例中，该字段为 nil 或者 Paths 长度为 0 时，表示不更新任何字段
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+message UpdateUserResponse {
+  User user = 1;
+}
+
+message GetUserRequest {
+  int64 id = 1;
+}
+
+message GetUserResponse {
+  User user = 1;
+}
+
+message ListUsersRequest {}
+
+message ListUsersResponse {
+  User user = 1;
+}

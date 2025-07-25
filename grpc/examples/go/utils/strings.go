@@ -33,6 +33,9 @@ func String(obj any) string {
 	val := reflect.ValueOf(obj)
 	ts := val.Type().String()
 	if val.Kind() == reflect.Pointer {
+		if val.IsNil() {
+			return "nil"
+		}
 		val = GetPointElem(val)
 	}
 
@@ -72,6 +75,10 @@ func String(obj any) string {
 		typ := val.Type()
 		for i := 0; i < l; i++ {
 			t, v := typ.Field(i), val.Field(i)
+			if v.Kind() == reflect.Pointer && v.IsNil() {
+				pairs = append(pairs, fmt.Sprintf("%v: %v", t.Name, "nil"))
+				continue
+			}
 			if v.CanInterface() {
 				pairs = append(pairs, fmt.Sprintf("%v: %v", t.Name, String(v.Interface())))
 			}
